@@ -1,6 +1,6 @@
 import React from 'react';
 // import './App.css';
-import {Button, AppBar, Toolbar, IconButton, Typography, Container, Card, CardContent, CardActions, Avatar } from '@material-ui/core';
+import { Typography, Container, Card, CardContent, Avatar } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
 
 function ErrorPage() {
   const classes = useStyles();
-  const bull = <span className={classes.bullet}>•</span>;
   return (
     <div className={classes.rootContainer}>
       {/* <AppBar position="static">
