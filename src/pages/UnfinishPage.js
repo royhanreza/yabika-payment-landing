@@ -73,7 +73,7 @@ function ErrorPage() {
               Info
             </Typography>
             <Typography variant="h5" component="h2">
-              Mohon Selesaikan Pembayaran
+              Mohon Selesaikan Transaksi
             </Typography>
             {/* <Typography className={classes.pos} color="textSecondary">
               adjective
