@@ -1,18 +1,14 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 // import './App.css';
-import { Typography, Container, Card, CardContent, Button, createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { Typography, Container, Card, CardContent, Button, createMuiTheme, ThemeProvider, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { blue, green } from '@material-ui/core/colors';
-import { PDFDownloadLink, Document, Page, Text } from '@react-pdf/renderer'
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import { ReceiptPdf } from './ReceiptPdf';
+import { useParams } from 'react-router-dom';
+import axios from 'axios'
 
-const MyDoc = () => (
-  <Document>
-    <Page>
-      <Text>THIS IS PDF</Text>
-    </Page>
-  </Document>
-)
 
 const useStyles = makeStyles((theme) => ({
   rootContainer: {
@@ -59,6 +55,14 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     color: '#fff'
   },
+  transactionNumber: {
+    color: green[500],
+  },
+  loadingCard: {
+    minWidth: 275,
+    marginTop: 20,
+    textAlign: 'center'
+  }
 }));
 
 const theme = createMuiTheme({
@@ -69,56 +73,69 @@ const theme = createMuiTheme({
 
 function Receipt() {
   const classes = useStyles();
-  return (
-    <div className={classes.rootContainer}>
-      {/* <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            News
-          </Typography>
-          <Button color="inherit">Login</Button>
-        </Toolbar>
-      </AppBar> */}
+  const {id} = useParams();
+  const [loading, setLoading] = useState(true)
+  const [transaction, setTransaction] = useState(null)
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/transactions/action/get-receipt/' + id).then(res => {
+      console.log(res.data)
+      setLoading(false)
+      setTransaction(res.data)
+    }).catch(err => {
+      console.log(err)
+      setLoading(false)
+    })
+  }, [id])
+
+  if(loading) {
+    return (
       <Container maxWidth="sm">
-        <Card className={classes.rootCard}>
+        <Card className={classes.loadingCard}>
           <CardContent>
-            
-              <GetAppIcon className={classes.icon}/>
-            
-            <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
-              Unduh Bukti Pembayaran
-            </Typography>
-            <Typography >
-              Tekan tombol dibawah untuk mengunduh
-            </Typography>
-            <ThemeProvider theme={theme}>
-              <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf" style={{textDecoration: 'none'}}>
-                {({ blob, url, loading, error }) => 
-                (loading ? 'Loading document...' : 
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.button}
-                    startIcon={<GetAppIcon />}
-                  >
-                    Unduh
-                  </Button>
-                )}
-              </PDFDownloadLink>
-            </ThemeProvider>
+            <CircularProgress />
           </CardContent>
-          {/* <CardActions>
-              <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf" style={{textDecoration: 'none'}}>
-                {({ blob, url, loading, error }) => (loading ? 'Loading document...' : <Button size="small">Download</Button>)}
-              </PDFDownloadLink>
-          </CardActions> */}
         </Card>
       </Container>
-    </div>
-  );
+    )
+  } else {
+    return (
+      <div className={classes.rootContainer}>
+        <Container maxWidth="sm">
+          <Card className={classes.rootCard}>
+            <CardContent>
+              <Typography >
+                Nomor Transaksi
+              </Typography>
+              <Typography className={classes.transactionNumber} >
+                {transaction?.transaction_number}
+              </Typography>
+              <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
+                Unduh Bukti Pembayaran
+              </Typography>
+              <ThemeProvider theme={theme}>
+                {transaction ?
+                  <PDFDownloadLink document={<ReceiptPdf transaction={transaction} />} fileName={transaction?.transaction_number + '.pdf'} style={{textDecoration: 'none'}}>
+                  {({ blob, url, loading, error }) => 
+                  (loading ? 'Loading document...' : 
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      className={classes.button}
+                      startIcon={<GetAppIcon />}
+                    >
+                      Unduh
+                    </Button>
+                  )}
+                </PDFDownloadLink> : <span style={{textAlign: 'center'}}>Loading...</span>
+                }
+              </ThemeProvider>
+            </CardContent>
+          </Card>
+        </Container>
+      </div>
+    );
+  }
 }
 
 export default Receipt;

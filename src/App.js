@@ -8,6 +8,7 @@ import FinishPage from './pages/FinishPage';
 import UnfinishPage from './pages/UnfinishPage';
 import ErrorPage from './pages/ErrorPage';
 import Receipt from './pages/Receipt';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -23,8 +24,11 @@ function App() {
           <Route path="/error">
             <ErrorPage />
           </Route>
-          <Route path="/receipt">
+          <Route path="/receipt/:id" exact>
             <Receipt />
+          </Route>
+          <Route path="*" exact>
+            <NotFoundPage />
           </Route>
         </Switch>
       </div>
