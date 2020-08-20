@@ -1,10 +1,9 @@
 import React from 'react';
 // import './App.css';
-import { Typography, Container, Card, CardContent, Avatar, CardActions, Button } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
+import { Typography, Container, Card, CardContent, Button, createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import CheckIcon from '@material-ui/icons/Check';
-import { green } from '@material-ui/core/colors';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import { blue, green } from '@material-ui/core/colors';
 import { PDFDownloadLink, Document, Page, Text } from '@react-pdf/renderer'
 
 const MyDoc = () => (
@@ -45,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
   iconContainer: {
     color: '#fff',
-    backgroundColor: green[500],
+    backgroundColor: blue[500],
     width: theme.spacing(7),
     height: theme.spacing(7),
     margin: '0 auto',
@@ -55,8 +54,18 @@ const useStyles = makeStyles((theme) => ({
   },
   alertStyle: {
     marginTop: 40
-  }
+  },
+  button: {
+    margin: theme.spacing(1),
+    color: '#fff'
+  },
 }));
+
+const theme = createMuiTheme({
+  palette: {
+    primary: green,
+  },
+});
 
 function Receipt() {
   const classes = useStyles();
@@ -76,31 +85,36 @@ function Receipt() {
       <Container maxWidth="sm">
         <Card className={classes.rootCard}>
           <CardContent>
-            <Avatar className={classes.iconContainer}>
-              <CheckIcon className={classes.icon}/>
-            </Avatar>
+            
+              <GetAppIcon className={classes.icon}/>
+            
             <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
-              Receipt
+              Unduh Bukti Pembayaran
             </Typography>
-            <Typography variant="h5" component="h2">
-              Transaksi Selesai
+            <Typography >
+              Tekan tombol dibawah untuk mengunduh
             </Typography>
-            <Typography className={classes.pos} color="textSecondary">
-              Segera lakukan pembayaran jika anda menggunakan Bank Transfer
-            </Typography>
-            {/* <Typography variant="body2" component="p">
-              Transaksi telah berhasil dibuat dan menunggu pembayaran atau pembayaran berhasil dilakukan
-              <br />
-              {'"a benevolent smile"'}
-            </Typography> */}
-            <Alert severity="info" className={classes.alertStyle}>Anda bisa menutup halaman ini</Alert>
+            <ThemeProvider theme={theme}>
+              <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf" style={{textDecoration: 'none'}}>
+                {({ blob, url, loading, error }) => 
+                (loading ? 'Loading document...' : 
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.button}
+                    startIcon={<GetAppIcon />}
+                  >
+                    Unduh
+                  </Button>
+                )}
+              </PDFDownloadLink>
+            </ThemeProvider>
           </CardContent>
-          <CardActions>
+          {/* <CardActions>
               <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf" style={{textDecoration: 'none'}}>
                 {({ blob, url, loading, error }) => (loading ? 'Loading document...' : <Button size="small">Download</Button>)}
               </PDFDownloadLink>
-            
-          </CardActions>
+          </CardActions> */}
         </Card>
       </Container>
     </div>
