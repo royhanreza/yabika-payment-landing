@@ -1,10 +1,19 @@
 import React from 'react';
 // import './App.css';
-import { Typography, Container, Card, CardContent, Avatar } from '@material-ui/core';
+import { Typography, Container, Card, CardContent, Avatar, CardActions, Button } from '@material-ui/core';
 import Alert from '@material-ui/lab/Alert';
 import { makeStyles } from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
 import { green } from '@material-ui/core/colors';
+import { PDFDownloadLink, Document, Page, Text } from '@react-pdf/renderer'
+
+const MyDoc = () => (
+  <Document>
+    <Page>
+      <Text>THIS IS PDF</Text>
+    </Page>
+  </Document>
+)
 
 const useStyles = makeStyles((theme) => ({
   rootContainer: {
@@ -49,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function FinishPage() {
+function Receipt() {
   const classes = useStyles();
   return (
     <div className={classes.rootContainer}>
@@ -71,7 +80,7 @@ function FinishPage() {
               <CheckIcon className={classes.icon}/>
             </Avatar>
             <Typography className={classes.cardTitle} color="textSecondary" gutterBottom>
-              Sukses
+              Receipt
             </Typography>
             <Typography variant="h5" component="h2">
               Transaksi Selesai
@@ -86,13 +95,16 @@ function FinishPage() {
             </Typography> */}
             <Alert severity="info" className={classes.alertStyle}>Anda bisa menutup halaman ini</Alert>
           </CardContent>
-          {/* <CardActions>
-            <Button size="small">Learn More</Button>
-          </CardActions> */}
+          <CardActions>
+              <PDFDownloadLink document={<MyDoc />} fileName="somename.pdf" style={{textDecoration: 'none'}}>
+                {({ blob, url, loading, error }) => (loading ? 'Loading document...' : <Button size="small">Download</Button>)}
+              </PDFDownloadLink>
+            
+          </CardActions>
         </Card>
       </Container>
     </div>
   );
 }
 
-export default FinishPage;
+export default Receipt;

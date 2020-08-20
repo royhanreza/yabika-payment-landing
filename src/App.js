@@ -7,6 +7,7 @@ import {
 import FinishPage from './pages/FinishPage';
 import UnfinishPage from './pages/UnfinishPage';
 import ErrorPage from './pages/ErrorPage';
+import Receipt from './pages/Receipt';
 
 function App() {
   return (
@@ -21,6 +22,9 @@ function App() {
           </Route>
           <Route path="/error">
             <ErrorPage />
+          </Route>
+          <Route path="/receipt">
+            <Receipt />
           </Route>
         </Switch>
       </div>
